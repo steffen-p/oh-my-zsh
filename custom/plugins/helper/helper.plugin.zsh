@@ -25,8 +25,31 @@ gitchkp () {
     return $retval
 }
 
+gitpatchid () {
+    num=1
+    retval=0
+    printf " %-9s | %-70s | %s |\n" "hash" "subject" "patch-id"
+    while [ $num -le $# ]
+    do
+        commithash="$(git --no-pager log --pretty="%h" -1 "$@[num]")"
+        printf " %-9s |" $commithash
+        commit="$(git --no-pager log --pretty="%s" -1 "$@[num]")"
+        printf " %-70s |" $commit
+        echo " $(git show "$@[num]" | git patch-id --stable | awk '{if(length($1)>8) $1=substr($1,1,8); print $1;}') |"
+        if [ $? -eq 1 ]; then
+            (( retval++ ))
+        fi
+        (( num++ ))
+    done
+    return $retval
+}
+
 gitchkr () {
     gitchkp `git log "$1" --oneline --no-merges|sed "s/ .*//"`
+}
+
+gitpatchidr () {
+    gitpatchid `git log "$1" --oneline --no-merges|sed "s/ .*//"`
 }
 
 h2d(){
