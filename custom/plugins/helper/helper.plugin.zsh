@@ -15,8 +15,8 @@ gitchkp () {
     while [ $num -le $# ]
     do
         echo "----------"
-        git log --oneline -1 "${!num%/}"
-        git format-patch -1 --stdout "${!num%/}" | scripts/checkpatch.pl --strict -q -
+        git --no-pager log --oneline -1 "$@[num]"
+        git format-patch -1 --stdout "$@[num]" | scripts/checkpatch.pl --strict -q -
         if [ $? -eq 1 ]; then
             (( retval++ ))
         fi
