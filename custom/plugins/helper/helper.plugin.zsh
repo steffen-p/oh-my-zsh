@@ -52,6 +52,52 @@ gitpatchidr () {
     gitpatchid `git log "$1" --oneline --no-merges|sed "s/ .*//"`
 }
 
+gitsortauth () {
+    retval=0
+    list=""
+    while read line
+    do
+        list="${list}""$(git --no-pager log --pretty="format:%at %H%n" $line -1)"$'\n'
+        (( retval++ ))
+    done < "${1:-/dev/stdin}"
+
+    list_sorted=$(echo $list | sort)
+    echo "$list_sorted" | while read line
+    do
+        if [ -n "${line-}" ]; then
+            echo $(echo $line | sed 's/.* //' | \
+                    git --no-pager log \
+                    --pretty=format:'%h - %Cgreen(%aD)%Creset %s' \
+                    -1 --stdin)
+        fi
+    done
+
+    return $retval
+}
+
+gitsortcom () {
+    retval=0
+    list=""
+    while read line
+    do
+        list="${list}""$(git --no-pager log --pretty="format:%ct %H%n" $line -1)"$'\n'
+        (( retval++ ))
+    done < "${1:-/dev/stdin}"
+
+    list_sorted=$(echo $list | sort)
+    echo "$list_sorted" | while read line
+    do
+        if [ -n "${line-}" ]; then
+            echo $(echo $line | sed 's/.* //' | \
+                    git --no-pager log \
+                    --pretty=format:'%h - %Cgreen(%ct)%Creset %s' \
+                    -1 --stdin)
+        fi
+    done
+
+    return $retval
+}
+
 h2d(){
       echo "ibase=16; $@"|bc
 }
