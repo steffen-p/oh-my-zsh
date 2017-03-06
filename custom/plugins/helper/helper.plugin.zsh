@@ -98,6 +98,23 @@ gitsortcom () {
     return $retval
 }
 
+gitpick () {
+    retval=0
+    while read line
+    do
+        out=$(git cherry-pick --strategy recursive -Xours -x -s $line)
+        echo $out
+        if grep -q "allow-empty" $out; then
+            echo "Empty merge in:"
+            echo $(git log --pretty=oneline $line)
+            echo "aborting..."
+            git cherry-pick --abort
+        fi
+    done < "${1:-/dev/stdin}"
+
+    return $retval
+}
+
 h2d(){
       echo "ibase=16; $@"|bc
 }
