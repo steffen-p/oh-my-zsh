@@ -102,7 +102,7 @@ gitpick () {
     retval=0
     while read line
     do
-        out=$(git cherry-pick --strategy recursive -Xours -x -s $line)
+        out=$(git cherry-pick -x -s $line)
         echo $out
         if grep -q "allow-empty" $out; then
             echo "Empty merge in:"
