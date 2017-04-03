@@ -44,6 +44,24 @@ gitpatchid () {
     return $retval
 }
 
+extcphash () {
+    num=1
+    retval=0
+    while [ $num -le $# ]
+    do
+        git log -1 "$@[num]" | grep "(cherry picked from" | awk {'print $7'} | cut -d")" -f 1
+        if [ $? -eq 1 ]; then
+            (( retval++ ))
+        fi
+        (( num++ ))
+    done
+    return $retval
+}
+
+extcphashr () {
+    extcphash `git log "$1" --oneline --no-merges|sed "s/ .*//"`
+}
+
 gitchkr () {
     gitchkp `git log "$1" --oneline --no-merges|sed "s/ .*//"`
 }
