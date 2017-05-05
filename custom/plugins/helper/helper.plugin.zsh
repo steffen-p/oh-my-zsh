@@ -41,6 +41,20 @@ gitpatchid () {
         fi
         (( num++ ))
     done
+    # handle from stdin
+    if [ $# -eq 0 ]; then
+        while read line; do
+            commithash="$(git --no-pager log --pretty="%h" -1 "$line")"
+            printf " %-9s |" $commithash
+            commit="$(git --no-pager log --pretty="%s" -1 "$line")"
+            printf " %-70s |" $commit
+            echo " $(git show "$line" | git patch-id --stable | awk '{if(length($1)>8) $1=substr($1,1,8); print $1;}') |"
+            if [ $? -eq 1 ]; then
+                (( retval++ ))
+            fi
+        done < /dev/stdin
+    fi
+
     return $retval
 }
 
