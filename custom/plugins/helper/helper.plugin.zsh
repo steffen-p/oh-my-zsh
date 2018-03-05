@@ -63,7 +63,7 @@ extcphash () {
     retval=0
     while [ $num -le $# ]
     do
-        git log -1 "$@[num]" | grep "(cherry picked from" | awk {'print $7'} | cut -d")" -f 1
+        git log -1 "$@[num]" | grep "(cherry picked from commit" | awk {'print $5'} | cut -d")" -f 1
         if [ $? -eq 1 ]; then
             (( retval++ ))
         fi
@@ -136,12 +136,6 @@ gitpick () {
     do
         out=$(git cherry-pick -x -s $line)
         echo $out
-        if grep -q "allow-empty" $out; then
-            echo "Empty merge in:"
-            echo $(git log --pretty=oneline $line)
-            echo "aborting..."
-            git cherry-pick --abort
-        fi
     done < "${1:-/dev/stdin}"
 
     return $retval
