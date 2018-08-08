@@ -1,21 +1,21 @@
 # AVIT ZSH Theme
 
-PROMPT=' $(_user_host)${_current_dir} $(__git_ps1 "(%s)") $(_ruby_version) %{$fg[$CARETCOLOR]%}▶%{$resetcolor%}  '
+PROMPT=' $(_user_host)${_current_dir}$(__git_ps1 "(%s) ")$(_ruby_version)%{$fg[$CARETCOLOR]%}$%{$resetcolor%} '
 
-PROMPT2='%{$fg[$CARETCOLOR]%}◀%{$reset_color%} '
+PROMPT2='%{$fg[$CARETCOLOR]%}<%{$reset_color%} '
 
 RPROMPT='$(_vi_status)%{$(echotc UP 1)%}${_return_status}%{$(echotc DO 1)%}'
 
-local _current_dir="%{$fg_bold[blue]%}%3~%{$reset_color%} "
+local _current_dir="%{$fg[blue]%}%3~%{$reset_color%} "
 local _return_status="%{$fg_bold[red]%}%(?..⍉)%{$reset_color%}"
 local _hist_no="%{$fg[grey]%}%h%{$reset_color%}"
 
 function _current_dir() {
   local _max_pwd_length="65"
   if [[ $(echo -n $PWD | wc -c) -gt ${_max_pwd_length} ]]; then
-    echo "%{$fg_bold[blue]%}%-2~ ... %3~%{$reset_color%} "
+    echo "%{$fg[blue]%}%-2~ ... %3~%{$reset_color%} "
   else
-    echo "%{$fg_bold[blue]%}%~%{$reset_color%} "
+    echo "%{$fg[blue]%}%~%{$reset_color%} "
   fi
 }
 
@@ -79,7 +79,7 @@ function _git_time_since_commit() {
 if [[ $USER == "root" ]]; then
   CARETCOLOR="red"
 else
-  CARETCOLOR="white"
+  CARETCOLOR="blue"
 fi
 
 MODE_INDICATOR="%{$fg_bold[yellow]%}❮%{$reset_color%}%{$fg[yellow]%}❮❮%{$reset_color%}"
